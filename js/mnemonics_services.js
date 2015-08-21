@@ -26,7 +26,7 @@ angular.module('gentleApp.mnemonics_services', [])
         return deferred.promise;
     };
     mnemonics.getMnemonicMap = getMnemonicMap;
-    mnemonics.validateMnemonic = function(mnemonic) {
+    /*mnemonics.validateMnemonic = function(mnemonic) {
         var deferred = $q.defer();
         var words = mnemonic.split(" ");
         if (words.length % 3 > 0) deferred.reject("Invalid number of words");
@@ -53,7 +53,44 @@ angular.module('gentleApp.mnemonics_services', [])
             deferred.resolve(retval);
         });
         return deferred.promise;
-    };
+    };*/
+    mnemonics.validateMnemonic = function(mnemonic) {
+        var deferred = $q.defer();
+        var words = mnemonic.split(" ");
+        if (words.length % 3 > 0) deferred.reject("Invalid number of words");
+        getMnemonicMap().then(function(mapping) {
+            var indices = [];
+            for (var i = 0; i < words.length; i++) {
+                if (mapping[words[i]] === undefined) {
+                    return deferred.reject("Unknown word '" + words[i] + "'");
+                }
+                indices.push(mapping[words[i]]);
+            }
+            var binary = '';
+            for (var i = 0; i < indices.length; i++) {
+                var binPart = new Bitcoin.BigInteger(indices[i].toString()).toRadix(2);
+                while (binPart.length < 11) binPart = '0' + binPart;
+                binary += binPart;
+            }
+            var bits = words.length*11 - words.length/3;
+            var retval = new Bitcoin.BigInteger(binary.substr(0, bits), 2).toByteArrayUnsigned();
+            while (retval.length < bits/8) retval.unshift(0);
+
+            var checksum = binary.substr(bits);
+            var wordArray = Bitcoin.convert.bytesToWordArray(retval);
+            var hash = Bitcoin.convert.wordArrayToBytes(Bitcoin.CryptoJS.SHA256(wordArray));
+            var binHash = '';
+            for(var i = 0; i < hash.length; i++) {
+                var binPart = new Bitcoin.BigInteger(hash[i].toString()).toRadix(2);
+                while (binPart.length < 8) binPart = '0' + binPart;
+                binHash += binPart;
+            }
+
+            if (binHash.substr(0, words.length/3) != checksum) return deferred.reject('Checksum does not match');  // checksum
+            deferred.resolve(retval);
+        });
+        return deferred.promise;
+    }
     mnemonics.fromMnemonic = function(mnemonic) {
         var bytes = mnemonics.validateMnemonic(mnemonic);
         var deferred = $q.defer();
