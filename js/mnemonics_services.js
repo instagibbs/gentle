@@ -90,7 +90,7 @@ angular.module('gentleApp.mnemonics_services', [])
             deferred.resolve(retval);
         });
         return deferred.promise;
-    }
+    };
     mnemonics.fromMnemonic = function(mnemonic) {
         var bytes = mnemonics.validateMnemonic(mnemonic);
         var deferred = $q.defer();
@@ -121,7 +121,7 @@ angular.module('gentleApp.mnemonics_services', [])
 
             var mnemonic = [];
             for (var i = 0; i < binary.length / 11; ++i) {
-                var index = new BigInteger(binary.slice(i*11, (i+1)*11), 2);
+                var index = new Bitcoin.BigInteger(binary.slice(i*11, (i+1)*11), 2);
                 mnemonic.push(words[index[0]]);
             }
             deferred.resolve(mnemonic.join(' '));
