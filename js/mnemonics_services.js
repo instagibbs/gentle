@@ -112,7 +112,8 @@ angular.module('gentleApp.mnemonics_services', [])
             var binary = Bitcoin.BigInteger.fromByteArrayUnsigned(data).toRadix(2);
             while (binary.length < data.length * 8) { binary = '0' + binary; }
 
-            var bytes = Bitcoin.CryptoJS.SHA256(Bitcoin.CryptoJS.SHA256(Bitcoin.convert.bytesToWordArray(data)));
+            //var bytes = Bitcoin.CryptoJS.SHA256(Bitcoin.CryptoJS.SHA256(Bitcoin.convert.bytesToWordArray(data))); //Double-SHA2 vs 1???
+            var bytes = Bitcoin.CryptoJS.SHA256(Bitcoin.convert.bytesToWordArray(data));
             bytes = Bitcoin.convert.wordArrayToBytes(bytes);
 
             var hash = Bitcoin.BigInteger.fromByteArrayUnsigned(bytes).toRadix(2);
