@@ -221,6 +221,11 @@ angular.module('gentleApp.controllers', ['gentleApp.mnemonics_services']).
                     return $q.when(mnemonics.toMnemonic(dec_bytes)).then(function(new_mnemonic){
                          if (gentle.mnemonic.split(' ').length === 24){
                              new_mnemonic = gentle.mnemonic;
+                         }else if (new_mnemonic.split(' ').length !== 24) {
+                             //This code is better in validateMnemonic
+                             //but error code is special case of failure.
+                             gentle.err = "Invalid passphrase for entered mnemonic";
+                             return;
                          }
                          return (function(N) {
                              return $q.when(mnemonics.validateMnemonic(new_mnemonic)).then(function() {
@@ -281,6 +286,7 @@ angular.module('gentleApp.controllers', ['gentleApp.mnemonics_services']).
         }
 
         $scope.file_changed = function(element) {
+            gentle.err = "";
             var reader = new FileReader();
             reader.onload = function(ev) {
                 try {

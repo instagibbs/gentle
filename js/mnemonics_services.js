@@ -26,34 +26,6 @@ angular.module('gentleApp.mnemonics_services', [])
         return deferred.promise;
     };
     mnemonics.getMnemonicMap = getMnemonicMap;
-    /*mnemonics.validateMnemonic = function(mnemonic) {
-        var deferred = $q.defer();
-        var words = mnemonic.split(" ");
-        if (words.length % 3 > 0) deferred.reject("Invalid number of words");
-        getMnemonicMap().then(function(mapping) {
-            var indices = [];
-            for (var i = 0; i < words.length; i++) {
-                if (mapping[words[i]] === undefined) {
-                    deferred.reject("Unknown word '" + words[i] + "'");
-                    return;
-                }
-                indices.push(mapping[words[i]]);
-            }
-            var binary = '';
-            for(var i = 0; i < indices.length; i++) {
-                var binPart = new Bitcoin.BigInteger(indices[i].toString()).toRadix(2);
-                while (binPart.length < 11) binPart = '0' + binPart;
-                binary += binPart;
-            }
-            var retval = new Bitcoin.BigInteger(binary, 2).toByteArrayUnsigned();
-            var checksum = retval.pop();
-            var hash = Bitcoin.CryptoJS.SHA256(Bitcoin.convert.bytesToWordArray(retval));
-            hash = Bitcoin.convert.wordArrayToBytes(hash);
-            if(hash[0] != checksum) deferred.reject('Checksum does not match');  // checksum
-            deferred.resolve(retval);
-        });
-        return deferred.promise;
-    };*/
     mnemonics.validateMnemonic = function(mnemonic) {
         var deferred = $q.defer();
         var words = mnemonic.split(" ");
@@ -112,7 +84,6 @@ angular.module('gentleApp.mnemonics_services', [])
             var binary = Bitcoin.BigInteger.fromByteArrayUnsigned(data).toRadix(2);
             while (binary.length < data.length * 8) { binary = '0' + binary; }
 
-            //var bytes = Bitcoin.CryptoJS.SHA256(Bitcoin.CryptoJS.SHA256(Bitcoin.convert.bytesToWordArray(data))); //Double-SHA2 vs 1???
             var bytes = Bitcoin.CryptoJS.SHA256(Bitcoin.convert.bytesToWordArray(data));
             bytes = Bitcoin.convert.wordArrayToBytes(bytes);
 
