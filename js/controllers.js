@@ -189,6 +189,7 @@ angular.module('gentleApp.controllers', ['gentleApp.mnemonics_services']).
 
         var watchFun = function(newValue, oldValue) {
             if (newValue == oldValue) return;
+            gentle.err = "";
             decryptZipIfAvailable().then(function() {
                 if (gentle.mnemonic && gentle.in_transactions) {
                     process();
@@ -221,7 +222,7 @@ angular.module('gentleApp.controllers', ['gentleApp.mnemonics_services']).
                     return $q.when(mnemonics.toMnemonic(dec_bytes)).then(function(new_mnemonic){
                          if (gentle.mnemonic.split(' ').length === 24){
                              new_mnemonic = gentle.mnemonic;
-                         }else if (new_mnemonic.split(' ').length !== 24) {
+                         }else if (new_mnemonic.split(' ').length !== 24 && gentle.mnemonic.split(' ').length === 27) {
                              //This code is better in validateMnemonic
                              //but error code is special case of failure.
                              gentle.err = "Invalid passphrase for entered mnemonic";
@@ -280,6 +281,9 @@ angular.module('gentleApp.controllers', ['gentleApp.mnemonics_services']).
                          });
                      })(++toSeedN);
                  });
+             }, function(err) {
+                gentle.err = err;
+                gentle.progress = 0;
              });
                 
             } else return $q.when();

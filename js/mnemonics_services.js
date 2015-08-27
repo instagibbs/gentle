@@ -29,12 +29,16 @@ angular.module('gentleApp.mnemonics_services', [])
     mnemonics.validateMnemonic = function(mnemonic) {
         var deferred = $q.defer();
         var words = mnemonic.split(" ");
-        if (words.length % 3 > 0) deferred.reject("Invalid number of words");
+        if (words.length % 3 > 0){
+            deferred.reject("Invalid number of words");
+            return deferred.promise;
+        }
         getMnemonicMap().then(function(mapping) {
             var indices = [];
             for (var i = 0; i < words.length; i++) {
                 if (mapping[words[i]] === undefined) {
-                    return deferred.reject("Unknown word '" + words[i] + "'");
+                    deferred.reject("Unknown word '" + words[i] + "'");
+                    return;
                 }
                 indices.push(mapping[words[i]]);
             }
@@ -69,7 +73,7 @@ angular.module('gentleApp.mnemonics_services', [])
         bytes.then(function(bytes) {
             deferred.resolve(bytes);
         }, function(e) {
-            throw("Invalid mnemonic: " + e);
+            deferred.reject("Invalid mnemonic: " + e);
         });
         return deferred.promise;
     };
