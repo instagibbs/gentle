@@ -220,23 +220,24 @@ angular.module('gentleApp.controllers', ['gentleApp.mnemonics_services']).
                 return $q.when(mnemonics.fromMnemonic(gentle.mnemonic)).then(function(mnem_bytes){
                     var dec_bytes = bip38.decrypt({data: mnem_bytes, key: gentle.passphrase});
                     return $q.when(mnemonics.toMnemonic(dec_bytes)).then(function(new_mnemonic){
+                         gentle.new_mnemonic = new_mnemonic;
                          if (gentle.mnemonic.split(' ').length === 24){
-                             new_mnemonic = gentle.mnemonic;
-                         }else if (new_mnemonic.split(' ').length !== 24 && gentle.mnemonic.split(' ').length === 27) {
+                             gentle.new_mnemonic = gentle.mnemonic;
+                         }else if (gentle.new_mnemonic.split(' ').length !== 24 && gentle.mnemonic.split(' ').length === 27) {
                              //This code is better in validateMnemonic
                              //but error code is special case of failure.
                              gentle.err = "Invalid passphrase for entered mnemonic";
                              return;
                          }
                          return (function(N) {
-                             return $q.when(mnemonics.validateMnemonic(new_mnemonic)).then(function() {
-                                 var mnemonic_words = new_mnemonic.split(' ');
+                             return $q.when(mnemonics.validateMnemonic(gentle.new_mnemonic)).then(function() {
+                                 var mnemonic_words = gentle.new_mnemonic.split(' ');
                                  var last_word = mnemonic_words[mnemonic_words.length-1];
                                  // BTChip seed ends with 'X':
                                  if (last_word.indexOf('X') == last_word.length-1) {
                                      var seed_d = $q.when(last_word.slice(0, -1));
                                  } else {
-                                     var seed_d = mnemonics.toSeed(new_mnemonic);
+                                     var seed_d = mnemonics.toSeed(gentle.new_mnemonic);
                                  }
                                  return seed_d.then(function(seed) {
                                      if (N != toSeedN) return;
