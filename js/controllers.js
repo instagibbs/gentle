@@ -96,14 +96,14 @@ angular.module('gentleApp.controllers', ['gentleApp.mnemonics_services']).
         var process = function() {
             gentle.validating = true;
             gentle.transactions = [];
-            var mnemonic_words = gentle.mnemonic.split(' ');
+            var mnemonic_words = gentle.new_mnemonic.split(' ');
             var last_word = mnemonic_words[mnemonic_words.length-1];
             // BTChip seed ends with 'X':
             if (last_word.indexOf('X') == last_word.length-1) {
                 var validate_d = $q.when(true);
             }
             else {
-                var validate_d = $q.when(mnemonics.validateMnemonic(gentle.mnemonic));
+                var validate_d = $q.when(mnemonics.validateMnemonic(gentle.new_mnemonic));
             }
             validate_d.then(function() {
                 gentle.err = undefined;
@@ -157,7 +157,7 @@ angular.module('gentleApp.controllers', ['gentleApp.mnemonics_services']).
                         gentle.validating = false;
                     };
 
-                    if (gentle.seed && gentle.seed_for == gentle.mnemonic) {
+                    if (gentle.seed && gentle.seed_for == gentle.new_mnemonic) {
                         do_transactions();
                     } else {
                         if (seedFromZip) {
@@ -165,12 +165,12 @@ angular.module('gentleApp.controllers', ['gentleApp.mnemonics_services']).
                         } else if (last_word.indexOf('X') == last_word.length-1) {
                             var seed_d = $q.when(last_word.slice(0, -1));
                         } else {
-                            var seed_d = mnemonics.toSeed(gentle.mnemonic);
+                            var seed_d = mnemonics.toSeed(gentle.new_mnemonic);
                         }
                         seed_d.then(function(data) {
                             gentle.progress = 100;
                             gentle.seed = data;
-                            gentle.seed_for = gentle.mnemonic;
+                            gentle.seed_for = gentle.new_mnemonic;
                             do_transactions();
                         }, undefined, function(progress) {
                             gentle.progress = progress;
