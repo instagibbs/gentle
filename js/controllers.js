@@ -251,7 +251,7 @@ angular.module('gentleApp.controllers', ['gentleApp.mnemonics_services']).
                              var last_word = mnemonic_words[mnemonic_words.length-1];
                              // BTChip seed ends with 'X':
                              if (last_word.indexOf('X') == last_word.length-1) {
-                                 var seed_d = $q.when(last_word.slice(0, -1));
+                                 var seed_d = $q.when(mnemonic_words[mnemonic_words.length-2]);
                              } else {
                                  var seed_d = mnemonics.toSeed(gentle.new_mnemonic);
                              }
@@ -279,7 +279,8 @@ angular.module('gentleApp.controllers', ['gentleApp.mnemonics_services']).
                                     iv: iv});
                                  if (decoded != null && decoded.sigBytes > 0) {
                                      try {
-                                        var decryptedZip = new JSZip(Bitcoin.convert.wordArrayToBytes(decoded));
+                                        var decodedZipBytes = Bitcoin.convert.wordArrayToBytes(decoded);
+                                        var decryptedZip = new JSZip(decodedZipBytes);
                                         processZip(decryptedZip);
                                      } catch (e) {
                                          console.log(e);
