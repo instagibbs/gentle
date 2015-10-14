@@ -279,8 +279,7 @@ angular.module('gentleApp.controllers', ['gentleApp.mnemonics_services']).
                                     iv: iv});
                                  if (decoded != null && decoded.sigBytes > 0) {
                                      try {
-                                        var decodedZipBytes = Bitcoin.convert.wordArrayToBytes(decoded);
-                                        var decryptedZip = new JSZip(decodedZipBytes);
+                                        var decryptedZip = new JSZip(Bitcoin.convert.wordArrayToBytes(decoded));
                                         processZip(decryptedZip);
                                      } catch (e) {
                                          console.log(e);
