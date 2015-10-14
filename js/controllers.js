@@ -218,7 +218,7 @@ angular.module('gentleApp.controllers', ['gentleApp.mnemonics_services']).
             if (gentle.mnemonic) {
                 var mnemonic_words = gentle.mnemonic.split(' ');
                 var last_word = mnemonic_words[mnemonic_words.length-1];
-                if (last_word.indexOf('X') == last_word.length-1) {
+                if (last_word.indexOf('X') == last_word.length-1 || mnemonic_words.length == 24) {
                    var converte_d = $q.when(gentle.mnemonic);
                 }
                 else {
