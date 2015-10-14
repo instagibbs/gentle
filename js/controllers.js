@@ -227,7 +227,7 @@ angular.module('gentleApp.controllers', ['gentleApp.mnemonics_services']).
                         return $q.when(mnemonics.toMnemonic(dec_bytes));
                     });
                 }
-                converte_d.then(function(new_mnemonic){
+                return converte_d.then(function(new_mnemonic){
                      gentle.new_mnemonic = new_mnemonic;
                      if (gentle.mnemonic.split(' ').length === 24 || gentle.mnemonic.split(' ').length == 2){
                          gentle.new_mnemonic = gentle.mnemonic;
